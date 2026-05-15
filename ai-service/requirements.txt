@@ -1,0 +1,34 @@
+# ============================================================
+#  ENTSI — AI Service requirements.txt
+#  Verified: Python 3.13 + Windows 11 compatible
+#  Last checked: May 2026
+# ============================================================
+
+# Web framework
+fastapi>=0.115.0
+uvicorn[standard]>=0.30.6
+
+# PDF Processing — pre-built wheels only (no compilation needed)
+PyMuPDF>=1.24.11
+pdfplumber>=0.11.4
+pytesseract>=0.3.10
+Pillow>=11.0.0
+
+# HTTP Client (Webhook → Laravel)
+httpx>=0.27.0
+
+# Security (HMAC webhook verification)
+python-jose[cryptography]>=3.3.0
+
+# Environment variables
+python-dotenv>=1.0.1
+
+# Data validation — pydantic v2 latest (Python 3.13 pre-built wheel)
+pydantic>=2.11.0
+pydantic-settings>=2.9.0
+
+# LLM
+openai>=1.35.0
+
+# Async
+anyio>=4.4.0

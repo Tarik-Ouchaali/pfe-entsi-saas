@@ -1,0 +1,65 @@
+# --- OS & IDEs ---
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+.nova/
+.zed/
+.cursor/
+.codex
+.phpactor.json
+
+# --- Environment & Secrets ---
+.env
+.env.*
+!.env.example
+
+# --- Laravel (backend-laravel) ---
+backend-laravel/vendor/
+backend-laravel/node_modules/
+backend-laravel/public/build
+backend-laravel/public/hot
+backend-laravel/public/storage
+backend-laravel/storage/framework/cache/*
+backend-laravel/storage/framework/sessions/*
+backend-laravel/storage/framework/views/*
+backend-laravel/storage/logs/
+!backend-laravel/storage/logs/.gitkeep
+backend-laravel/storage/pail
+backend-laravel/.phpunit.result.cache
+backend-laravel/.phpunit.cache
+_ide_helper.php
+Homestead.json
+Homestead.yaml
+
+# --- FastAPI (ai-service) ---
+ai-service/__pycache__/
+ai-service/.venv/
+ai-service/env/
+ai-service/venv/
+ai-service/.pytest_cache/
+ai-service/*.pyc
+ai-service/.ipynb_checkpoints/
+
+# --- Next.js (frontend-react) ---
+frontend-react/node_modules/
+frontend-react/.next/
+frontend-react/out/
+frontend-react/build/
+frontend-react/.vercel
+frontend-react/public/fonts-manifest.dev.json
+
+# --- Shared Storage ---
+shared-storage/uploads/*
+shared-storage/outputs/*
+!shared-storage/uploads/.gitkeep
+!shared-storage/outputs/.gitkeep
+
+# --- Docker & Logs ---
+docker/nginx/logs/*.log
+*.log
+
+# --- Composer & Build caches ---
+/vendor
+/node_modules
+.phpunit.result.cache
