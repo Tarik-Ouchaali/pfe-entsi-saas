@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('raison_sociale');
             $table->string('ice')->unique();
-            $table->string('adresse');
+            $table->string('adresse')->nullable();
             $table->integer('credits_restants')->default(0);
             $table->enum('statut', ['active', 'inactive'])->default('active');
             $table->timestamps();

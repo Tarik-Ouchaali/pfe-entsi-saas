@@ -24,6 +24,7 @@ class Entreprise extends Model
         'statut' => 'string',
         'credits_restants' => 'integer',
     ];
+    protected $hidden = ['deleted_at'];
 
     // ──────────────────────────────────────
     // Relations
