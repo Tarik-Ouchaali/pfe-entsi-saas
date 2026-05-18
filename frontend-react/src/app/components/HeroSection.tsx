@@ -42,16 +42,6 @@ export default function HeroSection() {
                   <path d="M6 12l4-4-4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </Link>
-              <a
-                href="#comment-ca-marche"
-                className="inline-flex items-center justify-center gap-2 rounded-lg border-2 border-navy/20 px-7 py-3.5 text-sm font-semibold text-navy hover:border-navy/40 hover:bg-navy/[0.03] transition-all"
-              >
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                  <circle cx="8" cy="8" r="7" stroke="#0F2D5E" strokeWidth="1.5"/>
-                  <polygon points="6.5,5 11.5,8 6.5,11" fill="#0F2D5E"/>
-                </svg>
-                Voir une démo
-              </a>
             </div>
 
             {/* Trust badges */}
