@@ -133,23 +133,4 @@ class AuthService
         $user->sendEmailVerificationNotification();
     }
 
-    /**
-     * @param string $id
-     * @param string $hash
-     * @return void
-     */
-    public function verifyEmail(string $id, string $hash): void
-    {
-        $user = User::findOrFail($id);
-
-        if (sha1($user->getEmailForVerification()) !== $hash) {
-            abort(403, 'Lien invalide.');
-        }
-
-        if ($user->hasVerifiedEmail()) {
-            abort(422, 'Email déjà vérifié.');
-        }
-
-        $user->markEmailAsVerified();
-    }
 }

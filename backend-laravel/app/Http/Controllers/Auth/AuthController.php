@@ -10,6 +10,7 @@ use App\Http\Requests\Auth\ResetPasswordRequest;
 use App\Services\Auth\AuthService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use App\Models\User;
 
 class AuthController extends Controller
 {
@@ -115,18 +116,16 @@ class AuthController extends Controller
         ]);
     }
 
-    /**
-     * @param Request $request
-     * @param string $id
-     * @param string $hash
-     * @return JsonResponse
-     */
-    public function verifyEmail(Request $request, string $id, string $hash): JsonResponse
+    public function verifyEmail(Request $request)
     {
-        $this->authService->verifyEmail($id, $hash);
+        $user = User::findOrFail($request->id);
 
-        return response()->json([
-            'message' => 'Email vérifié avec succès.',
-        ]);
+        if (! hash_equals((string) $request->hash, sha1($user->email))) {
+            return response()->json(['message' => 'Invalid signature'], 403);
+        }
+
+        $user->markEmailAsVerified();
+
+        return redirect(config('app.frontend_url') . '/email-verified');
     }
 }
