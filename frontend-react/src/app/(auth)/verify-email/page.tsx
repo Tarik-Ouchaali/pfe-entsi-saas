@@ -10,9 +10,24 @@ export default function VerifyEmailPage() {
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && !localStorage.getItem('auth_token')) {
-      router.replace('/login');
-    }
+      if (typeof window !== 'undefined') {
+        const token = localStorage.getItem('auth_token');
+        const user = localStorage.getItem('auth_user');
+        
+        if (!token || !user) {
+          router.replace('/login');
+          return;
+        }
+
+        try {
+          const userData = JSON.parse(user);
+          if (userData.email_verified_at) {
+            router.replace('/dashboard');
+          }
+        } catch {
+          router.replace('/login');
+        }
+      }
   }, [router]);
 
   const handleResend = async () => {

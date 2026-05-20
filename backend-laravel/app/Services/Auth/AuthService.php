@@ -58,7 +58,13 @@ class AuthService
         }
 
         if (!$user->hasVerifiedEmail()) {
-            abort(403, 'Email non vérifié. Vérifiez votre boîte mail.');
+            $token = $user->createToken('auth_token')->plainTextToken;
+            
+            abort(response()->json([
+                'message' => 'Email non vérifié. Vérifiez votre boîte mail.',
+                'user' => $user->load('entreprise'),
+                'token' => $token,
+            ], 403));
         }
 
         if ($user->entreprise && !$user->entreprise->estActive()) {

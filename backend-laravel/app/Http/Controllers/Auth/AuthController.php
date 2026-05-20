@@ -126,6 +126,6 @@ class AuthController extends Controller
 
         $user->markEmailAsVerified();
 
-        return redirect(config('app.frontend_url') . '/email-verified');
+        return redirect(config('app.frontend_url') . '/dashboard?status=verified');
     }
 }
