@@ -32,7 +32,16 @@ class Handler extends ExceptionHandler
             return response()->json(['message' => $e->getMessage()], 401);
         }
 
-        // 4. HTTP exceptions (abort())
+        // 4. Insufficient credits
+        if ($e instanceof \App\Exceptions\InsufficientCreditsException) {
+            return response()->json([
+                'message'             => $e->getMessage(),
+                'credits_manquants'   => $e->getCreditsManquants(),
+                'credits_disponibles' => $e->getCreditsDisponibles(),
+            ], 402);
+        }
+
+        // 5. HTTP exceptions (abort())
         if ($e instanceof HttpException) {
             return response()->json(['message' => $e->getMessage()], $e->getStatusCode());
         }

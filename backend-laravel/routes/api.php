@@ -22,3 +22,20 @@ use Illuminate\Support\Facades\Route;
         });
 
     });
+
+use App\Http\Controllers\CreditController;
+
+Route::prefix('credits')->middleware(['auth:sanctum', 'verified'])->group(function () {
+    Route::get('/balance',      [CreditController::class, 'balance']);
+    Route::get('/packs',        [CreditController::class, 'packs']);
+    Route::post('/purchase',    [CreditController::class, 'purchase']);
+    Route::get('/transactions', [CreditController::class, 'transactions']);
+});
+
+Route::prefix('admin')->middleware(['auth:sanctum', 'superadmin'])->group(function () {
+    Route::get('credit-packs',                   [CreditController::class, 'adminIndex']);
+    Route::post('credit-packs',                  [CreditController::class, 'adminStore']);
+    Route::put('credit-packs/{id}',              [CreditController::class, 'adminUpdate']);
+    Route::delete('credit-packs/{id}',           [CreditController::class, 'adminDestroy']);
+    Route::post('companies/{id}/credits/adjust', [CreditController::class, 'adjustCredits']);
+});

@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\Enums\TransactionType;
 use App\Traits\BelongsToTenant;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class TransactionCredit extends Model
 {
@@ -13,6 +15,8 @@ class TransactionCredit extends Model
 
     protected $fillable = [
         'entreprise_id',
+        'user_id',
+        'projet_id',
         'type_transaction',
         'montant',
         'description',
@@ -20,24 +24,42 @@ class TransactionCredit extends Model
     ];
 
     protected $casts = [
-        'type_transaction' => 'string',
+        'type_transaction' => TransactionType::class,
         'montant' => 'integer',
         'date_transaction' => 'datetime',
     ];
 
     // entreprise() provided by BelongsToTenant trait
 
-    // ──────────────────────────────────────
-    // Simple domain methods
-    // ──────────────────────────────────────
-
-    public function estAchat(): bool
+    /**
+     * @return BelongsTo
+     */
+    public function user(): BelongsTo
     {
-        return $this->type_transaction === 'Achat';
+        return $this->belongsTo(User::class)->withDefault();
     }
 
+    /**
+     * @return BelongsTo
+     */
+    public function projet(): BelongsTo
+    {
+        return $this->belongsTo(ProjetDAO::class)->withDefault();
+    }
+
+    /**
+     * @return bool
+     */
+    public function estCredit(): bool
+    {
+        return $this->type_transaction->isCredit() && $this->montant > 0;
+    }
+
+    /**
+     * @return bool
+     */
     public function estConsommation(): bool
     {
-        return $this->type_transaction === 'Consommation';
+        return !$this->type_transaction->isCredit() || $this->montant < 0;
     }
 }
