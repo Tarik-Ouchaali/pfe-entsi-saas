@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AbonnementController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\ConformiteController;
 use App\Http\Controllers\CreditController;
 use App\Http\Controllers\ProjetDAOController;
 use App\Http\Controllers\WebhookController;
@@ -52,8 +53,18 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     });
 });
 
+// Conformité — Entreprise
+Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+    Route::post('projets/{id}/conformite', [ConformiteController::class, 'verifier']);
+    Route::get('projets/{id}/conformite',  [ConformiteController::class, 'rapport']);
+});
+
 // Webhook — FastAPI → Laravel (no sanctum — HMAC protected)
 Route::post('/webhook/analysis-done', [WebhookController::class, 'analyseDone'])
+     ->middleware('verify.webhook');
+
+// Webhook conformite
+Route::post('/webhook/conformite-done', [WebhookController::class, 'conformiteDone'])
      ->middleware('verify.webhook');
 
 // ── SuperAdmin ──────────────────────────────────────────────

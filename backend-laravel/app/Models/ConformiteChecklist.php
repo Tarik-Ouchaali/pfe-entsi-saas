@@ -10,6 +10,7 @@ class ConformiteChecklist extends Model
 {
     protected $table = 'conformite_checklists';
     protected $fillable = [
+        'projet_dao_id',
         'exigence_dao_id',
         'document_bibliotheque_id',
         'statut',
@@ -33,7 +34,7 @@ class ConformiteChecklist extends Model
             if (auth()->check()
                 && auth()->user()->role !== 'SuperAdmin'
                 && auth()->user()->entreprise_id) {
-                $query->whereHas('exigenceDAO.resultatAnalyse.projetDAO', function (Builder $q) {
+                $query->whereHas('projetDAO', function (Builder $q) {
                     $q->where('entreprise_id', auth()->user()->entreprise_id);
                 });
             }
@@ -44,6 +45,17 @@ class ConformiteChecklist extends Model
     // Relations
     // ──────────────────────────────────────
 
+    /**
+     * @return BelongsTo
+     */
+    public function projetDAO(): BelongsTo
+    {
+        return $this->belongsTo(ProjetDAO::class, 'projet_dao_id');
+    }
+
+    /**
+     * @return BelongsTo
+     */
     public function exigenceDAO(): BelongsTo
     {
         return $this->belongsTo(ExigenceDAO::class);
