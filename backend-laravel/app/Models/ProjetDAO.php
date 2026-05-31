@@ -66,4 +66,12 @@ class ProjetDAO extends Model
     {
         return $this->statut === 'Termine';
     }
+
+    /**
+     * @return bool
+     */
+    public function estEchoue(): bool
+    {
+        return $this->statut === 'Echoue';
+    }
 }

@@ -35,4 +35,12 @@ return [
         ],
     ],
 
+    'webhook' => [
+        'secret' => env('WEBHOOK_SECRET', 'change_me_strong_secret_key'),
+    ],
+
+    'ai_service' => [
+        'url' => env('AI_SERVICE_URL', 'http://ai-service:8000'),
+    ],
+
 ];

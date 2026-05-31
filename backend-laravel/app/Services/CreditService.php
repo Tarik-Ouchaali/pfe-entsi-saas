@@ -103,4 +103,28 @@ class CreditService
             ->orderByDesc('date_transaction')
             ->paginate($perPage);
     }
+
+    /**
+     * @param Entreprise $entreprise
+     * @param int $projetId
+     * @return void
+     */
+    public function rembourserCredit(Entreprise $entreprise, int $projetId): void
+    {
+        DB::transaction(function () use ($entreprise, $projetId): void {
+            $entreprise = Entreprise::lockForUpdate()->findOrFail($entreprise->id);
+
+            $entreprise->ajouterCreditsPack(1);
+
+            TransactionCredit::create([
+                'entreprise_id'    => $entreprise->id,
+                'user_id'          => null,
+                'projet_id'        => $projetId,
+                'type_transaction' => TransactionType::REMBOURSEMENT,
+                'montant'          => 1,
+                'description'      => 'Remboursement suite à échec analyse',
+                'date_transaction' => now(),
+            ]);
+        });
+    }
 }

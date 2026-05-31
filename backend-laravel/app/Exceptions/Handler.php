@@ -41,7 +41,16 @@ class Handler extends ExceptionHandler
             ], 402);
         }
 
-        // 5. HTTP exceptions (abort())
+        // 5. Analysis failed
+        if ($e instanceof \App\Exceptions\AnalysisFailedException) {
+            return response()->json([
+                'message'   => $e->getMessage(),
+                'projet_id' => $e->getProjetId(),
+                'raison'    => $e->getRaison(),
+            ], 422);
+        }
+
+        // 6. HTTP exceptions (abort())
         if ($e instanceof HttpException) {
             return response()->json(['message' => $e->getMessage()], $e->getStatusCode());
         }

@@ -18,6 +18,7 @@ class Abonnement extends Model
         'date_debut',
         'date_fin',
         'statut',
+        'next_plan_id',
     ];
 
     protected $casts = [
@@ -33,6 +34,14 @@ class Abonnement extends Model
     public function planSaaS(): BelongsTo
     {
         return $this->belongsTo(PlanSaaS::class, 'plan_saas_id');
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function nextPlan(): BelongsTo
+    {
+        return $this->belongsTo(PlanSaaS::class, 'next_plan_id')->withDefault();
     }
 
     // entreprise() provided by BelongsToTenant trait
