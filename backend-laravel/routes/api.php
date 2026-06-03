@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AbonnementController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\BibliothequController;
 use App\Http\Controllers\ConformiteController;
 use App\Http\Controllers\CreditController;
 use App\Http\Controllers\ProjetDAOController;
@@ -57,6 +58,16 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('projets/{id}/conformite', [ConformiteController::class, 'verifier']);
     Route::get('projets/{id}/conformite',  [ConformiteController::class, 'rapport']);
+});
+
+Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+    Route::prefix('bibliotheque')->group(function () {
+        Route::get('/expirations',       [BibliothequController::class, 'expirations']);
+        Route::get('/',                  [BibliothequController::class, 'index']);
+        Route::post('/',                 [BibliothequController::class, 'store']);
+        Route::post('/{groupe}/version', [BibliothequController::class, 'ajouterVersion']);
+        Route::delete('/{id}',           [BibliothequController::class, 'destroy']);
+    });
 });
 
 // Webhook — FastAPI → Laravel (no sanctum — HMAC protected)

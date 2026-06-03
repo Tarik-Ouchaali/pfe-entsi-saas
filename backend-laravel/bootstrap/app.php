@@ -16,6 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withSchedule(function (Schedule $schedule) {
         $schedule->command('abonnements:renouveler')->daily();
+        $schedule->command('bibliotheque:alertes-expiration')->daily();
     })
     ->withMiddleware(function (Middleware $middleware): void {
         Authenticate::redirectUsing(fn() => null);
