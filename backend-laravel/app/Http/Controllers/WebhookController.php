@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\AuditLog;
 use App\Models\ProjetDAO;
 use App\Services\ConformiteService;
+use App\Services\MemoireService;
 use App\Services\ProjetDAOService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -14,10 +15,12 @@ class WebhookController extends Controller
     /**
      * @param ProjetDAOService $projetService
      * @param ConformiteService $conformiteService
+     * @param MemoireService $memoireService
      */
     public function __construct(
         private ProjetDAOService $projetService,
         private ConformiteService $conformiteService,
+        private MemoireService $memoireService,
     ) {
     }
 
@@ -64,6 +67,27 @@ class WebhookController extends Controller
                 'entite_concernee' => 'ProjetDAO:' . $projet->id,
                 'date_action'      => now(),
             ]);
+        }
+
+        return response()->json(['message' => 'ok'], 200);
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function memoireDone(Request $request): JsonResponse
+    {
+        $data = $request->json()->all();
+
+        $projet = ProjetDAO::findOrFail($data['projet_id']);
+
+        if ($data['statut'] === 'success') {
+            $this->memoireService->sauvegarderMemoire($projet, $data);
+        }
+
+        if ($data['statut'] === 'error') {
+            $this->memoireService->marquerEchoue($projet, $data['error']);
         }
 
         return response()->json(['message' => 'ok'], 200);

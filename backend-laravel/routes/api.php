@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\BibliothequController;
 use App\Http\Controllers\ConformiteController;
 use App\Http\Controllers\CreditController;
+use App\Http\Controllers\MemoireController;
 use App\Http\Controllers\ProjetDAOController;
 use App\Http\Controllers\WebhookController;
 use Illuminate\Support\Facades\Route;
@@ -70,12 +71,26 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     });
 });
 
+// Mémoire technique — Entreprise
+Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+    Route::prefix('projets/{id}/memoire')->group(function () {
+        Route::get('/telecharger', [MemoireController::class, 'telecharger']);
+        Route::post('/regenerer',  [MemoireController::class, 'regenerer']);
+        Route::get('/',            [MemoireController::class, 'show']);
+        Route::post('/',           [MemoireController::class, 'generer']);
+    });
+});
+
 // Webhook — FastAPI → Laravel (no sanctum — HMAC protected)
 Route::post('/webhook/analysis-done', [WebhookController::class, 'analyseDone'])
      ->middleware('verify.webhook');
 
 // Webhook conformite
 Route::post('/webhook/conformite-done', [WebhookController::class, 'conformiteDone'])
+     ->middleware('verify.webhook');
+
+// Webhook memoire
+Route::post('/webhook/memoire-done', [WebhookController::class, 'memoireDone'])
      ->middleware('verify.webhook');
 
 // ── SuperAdmin ──────────────────────────────────────────────

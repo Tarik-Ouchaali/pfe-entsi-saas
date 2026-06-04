@@ -35,12 +35,9 @@ class AnalyseDAOJob implements ShouldQueue
 
     /**
      * @param ProjetDAO $projet
-     * @param CreditService $creditService
      */
-    public function __construct(
-        public ProjetDAO $projet,
-        private CreditService $creditService,
-    ) {
+    public function __construct(public ProjetDAO $projet)
+    {
     }
 
     /**
@@ -74,7 +71,7 @@ class AnalyseDAOJob implements ShouldQueue
         $this->projet->refresh();
         $this->projet->update(['statut' => 'Echoue']);
 
-        $this->creditService->rembourserCredit($this->projet->entreprise, $this->projet->id);
+        app(CreditService::class)->rembourserCredit($this->projet->entreprise, $this->projet->id);
 
         Mail::to($this->projet->user->email)->send(new AnalyseEchoueMail($this->projet, $e->getMessage()));
 

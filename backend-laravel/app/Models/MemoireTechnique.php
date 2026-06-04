@@ -16,6 +16,7 @@ class MemoireTechnique extends Model
     
     protected $fillable = [
         'projet_dao_id',
+        'statut',
         'contenu',
         'chemin_export',
         'date_generation',
@@ -23,6 +24,7 @@ class MemoireTechnique extends Model
 
     protected $casts = [
         'date_generation' => 'datetime',
+        'statut'          => 'string',
     ];
 
     // ──────────────────────────────────────
@@ -41,5 +43,29 @@ class MemoireTechnique extends Model
     public function estGenere(): bool
     {
         return $this->chemin_export !== null;
+    }
+
+    /**
+     * @return bool
+     */
+    public function estEnGeneration(): bool
+    {
+        return $this->statut === 'En_generation';
+    }
+
+    /**
+     * @return bool
+     */
+    public function estTermine(): bool
+    {
+        return $this->statut === 'Termine';
+    }
+
+    /**
+     * @return bool
+     */
+    public function estEchoue(): bool
+    {
+        return $this->statut === 'Echoue';
     }
 }
