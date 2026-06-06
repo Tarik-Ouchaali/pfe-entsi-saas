@@ -284,11 +284,10 @@ export default function DashboardPage() {
                   <div
                     className="bg-gold rounded-full h-2 transition-all"
                     style={{
-                      width: `${
-                        (balance?.total ?? 0) > 0
-                          ? ((balance?.pack_credits ?? 0) / (balance?.total ?? 1)) * 100
-                          : 0
-                      }%`,
+                      width: `${(balance?.total ?? 0) > 0
+                        ? ((balance?.pack_credits ?? 0) / (balance?.total ?? 1)) * 100
+                        : 0
+                        }%`,
                     }}
                   />
                 </div>
@@ -340,23 +339,29 @@ export default function DashboardPage() {
               <h3 className="font-semibold text-navy mb-4">Actions rapides</h3>
               <div className="space-y-3">
                 {[
-                  { label: 'Nouveau projet', href: '/projets/nouveau', icon: (
-                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <circle cx="9" cy="9" r="7" stroke="currentColor" strokeWidth="1.5" />
-                      <path d="M9 6v6M6 9h6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                    </svg>
-                  )},
-                  { label: 'Bibliothèque', href: '/bibliotheque', icon: (
-                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M3 2h8l4 4v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
-                      <path d="M11 2v4h4" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
-                    </svg>
-                  )},
-                  { label: 'Mes projets', href: '/projets', icon: (
-                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M2 3.5C2 2.67 2.67 2 3.5 2H8l2 2h4.5c.83 0 1.5.67 1.5 1.5V14c0 .83-.67 1.5-1.5 1.5h-11A1.5 1.5 0 0 1 2 14V3.5Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
-                    </svg>
-                  )},
+                  {
+                    label: 'Nouveau projet', href: '/projets/nouveau', icon: (
+                      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="9" cy="9" r="7" stroke="currentColor" strokeWidth="1.5" />
+                        <path d="M9 6v6M6 9h6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                      </svg>
+                    )
+                  },
+                  {
+                    label: 'Bibliothèque', href: '/bibliotheque', icon: (
+                      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 2h8l4 4v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+                        <path d="M11 2v4h4" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+                      </svg>
+                    )
+                  },
+                  {
+                    label: 'Mes projets', href: '/projets', icon: (
+                      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M2 3.5C2 2.67 2.67 2 3.5 2H8l2 2h4.5c.83 0 1.5.67 1.5 1.5V14c0 .83-.67 1.5-1.5 1.5h-11A1.5 1.5 0 0 1 2 14V3.5Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+                      </svg>
+                    )
+                  },
                 ].map((item) => (
                   <Link
                     key={item.href}

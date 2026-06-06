@@ -63,7 +63,11 @@ export default function LoginPage() {
       if (res.ok) {
         localStorage.setItem('auth_token', data.token);
         localStorage.setItem('auth_user', JSON.stringify(data.user));
-        router.push('/dashboard');
+        if (data.user.role === 'SuperAdmin') {
+          router.push('/admin')
+        } else {
+          router.push('/dashboard')
+        }
       } else if (res.status === 403) {
         if (data.token) {
           localStorage.setItem('auth_token', data.token);
@@ -122,9 +126,8 @@ export default function LoginPage() {
                 placeholder="nom@entreprise.ma"
                 value={form.email}
                 onChange={(e) => handleChange('email', e.target.value)}
-                className={`w-full rounded-lg border px-4 py-2.5 text-sm text-text placeholder:text-text-muted/50 outline-none transition-all focus:ring-2 focus:ring-navy/20 focus:border-navy ${
-                  errors.email ? 'border-red-400 focus:ring-red-200 focus:border-red-400' : 'border-border'
-                }`}
+                className={`w-full rounded-lg border px-4 py-2.5 text-sm text-text placeholder:text-text-muted/50 outline-none transition-all focus:ring-2 focus:ring-navy/20 focus:border-navy ${errors.email ? 'border-red-400 focus:ring-red-200 focus:border-red-400' : 'border-border'
+                  }`}
               />
               {errors.email && (
                 <p className="mt-1.5 text-xs text-red-600">{errors.email}</p>
@@ -149,9 +152,8 @@ export default function LoginPage() {
                 placeholder="••••••••"
                 value={form.password}
                 onChange={(e) => handleChange('password', e.target.value)}
-                className={`w-full rounded-lg border px-4 py-2.5 text-sm text-text placeholder:text-text-muted/50 outline-none transition-all focus:ring-2 focus:ring-navy/20 focus:border-navy ${
-                  errors.password ? 'border-red-400 focus:ring-red-200 focus:border-red-400' : 'border-border'
-                }`}
+                className={`w-full rounded-lg border px-4 py-2.5 text-sm text-text placeholder:text-text-muted/50 outline-none transition-all focus:ring-2 focus:ring-navy/20 focus:border-navy ${errors.password ? 'border-red-400 focus:ring-red-200 focus:border-red-400' : 'border-border'
+                  }`}
               />
               {errors.password && (
                 <p className="mt-1.5 text-xs text-red-600">{errors.password}</p>
