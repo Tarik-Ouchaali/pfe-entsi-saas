@@ -3,8 +3,8 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { isAuthenticated, isSuperAdmin } from '@/lib/auth'
-import Sidebar from '@/app/components/layout/Sidebar'
-import Header from '@/app/components/layout/Header'
+import Sidebar from '@/components/layout/Sidebar'
+import Header from '@/components/layout/Header'
 
 export default function AdminLayout({
   children,
