@@ -67,7 +67,7 @@ export default function CreditsPage() {
       `/credits/transactions?per_page=10&page=${page}`
     )
       .then((data) => setTransactions(data))
-      .catch(() => {})
+      .catch(() => { })
   }, [page])
 
   // Purchase handler
@@ -263,7 +263,7 @@ export default function CreditsPage() {
 
             {purchaseSuccess === pack.nom && (
               <div className="bg-green-50 border border-green-200 rounded-lg p-2 mt-3 text-xs text-green-700 text-center">
-                ✅ Achat réussi ! Crédits ajoutés.
+                Achat réussi ! Crédits ajoutés.
               </div>
             )}
 

@@ -129,7 +129,7 @@ export default function ConformitePage() {
           {launched ? (
             <div className="bg-green-50 border border-green-200 rounded-xl p-4 mt-6 max-w-sm mx-auto">
               <p className="text-sm text-green-700">
-                ✅ Vérification lancée ! Vous serez notifié par email.
+                Vérification lancée ! Vous serez notifié par email.
               </p>
             </div>
           ) : (
@@ -209,7 +209,7 @@ export default function ConformitePage() {
                 disabled={launching}
                 className="border border-navy text-navy px-4 py-2 rounded-lg text-sm mt-4 hover:bg-navy hover:text-white transition-colors"
               >
-                {launching ? 'Lancement...' : '🔄 Re-vérifier'}
+                {launching ? 'Lancement...' : 'Re-vérifier'}
               </button>
             )}
           </div>
@@ -246,11 +246,10 @@ export default function ConformitePage() {
                     </td>
                     <td className="px-5 py-4">
                       <span
-                        className={`text-xs px-2 py-0.5 rounded-full ${
-                          checklist.exigence.type === 'administratif'
+                        className={`text-xs px-2 py-0.5 rounded-full ${checklist.exigence.type === 'administratif'
                             ? 'bg-blue-100 text-blue-700'
                             : 'bg-purple-100 text-purple-700'
-                        }`}
+                          }`}
                       >
                         {checklist.exigence.type}
                       </span>
@@ -271,13 +270,12 @@ export default function ConformitePage() {
                     </td>
                     <td className="px-5 py-4">
                       <span
-                        className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                          checklist.statut === 'conforme'
+                        className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${checklist.statut === 'conforme'
                             ? 'bg-green-100 text-green-700'
                             : checklist.statut === 'manquant'
                               ? 'bg-red-100 text-red-700'
                               : 'bg-orange-100 text-orange-700'
-                        }`}
+                          }`}
                       >
                         {checklist.statut === 'conforme'
                           ? '✓ Conforme'

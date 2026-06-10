@@ -143,7 +143,7 @@ export default function BibliothequePage() {
             </svg>
             <div>
               <p className="font-medium text-orange-700 text-sm">
-                ⚠ {expirations.length} document(s) expirent dans 7 jours
+                {expirations.length} document(s) expirent dans 7 jours
               </p>
               <div className="mt-1 space-y-0.5">
                 {expirations.map((doc) => (
@@ -164,11 +164,10 @@ export default function BibliothequePage() {
           <button
             key={f.value}
             onClick={() => handleFilterChange(f.value)}
-            className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors cursor-pointer ${
-              filterCategorie === f.value
+            className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors cursor-pointer ${filterCategorie === f.value
                 ? 'bg-navy text-white'
                 : 'bg-white border border-border text-text-muted hover:border-navy hover:text-navy'
-            }`}
+              }`}
           >
             {f.label}
           </button>
@@ -306,11 +305,10 @@ export default function BibliothequePage() {
                   <button
                     onClick={() => setPage((p) => p - 1)}
                     disabled={page === 1}
-                    className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
-                      page === 1
+                    className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${page === 1
                         ? 'opacity-40 cursor-not-allowed border border-border text-text-muted'
                         : 'border border-border text-text hover:border-navy hover:text-navy'
-                    }`}
+                      }`}
                   >
                     ← Précédent
                   </button>
@@ -320,11 +318,10 @@ export default function BibliothequePage() {
                   <button
                     onClick={() => setPage((p) => p + 1)}
                     disabled={page === documents.last_page}
-                    className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
-                      page === documents.last_page
+                    className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${page === documents.last_page
                         ? 'opacity-40 cursor-not-allowed border border-border text-text-muted'
                         : 'border border-border text-text hover:border-navy hover:text-navy'
-                    }`}
+                      }`}
                   >
                     Suivant →
                   </button>

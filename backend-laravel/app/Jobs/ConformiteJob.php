@@ -16,10 +16,7 @@ class ConformiteJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    /**
-     * @var string
-     */
-    public string $queue = 'default';
+
 
     /**
      * @var int
@@ -68,7 +65,7 @@ class ConformiteJob implements ShouldQueue
                     'chemin_fichier' => $document->chemin_fichier,
                 ];
             })->values()->toArray(),
-            'webhook_url'   => url('/api/webhook/conformite-done'),
+            'webhook_url'   => 'http://laravel/api/webhook/conformite-done',
         ];
 
         $response = Http::timeout(30)->post(

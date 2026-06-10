@@ -134,7 +134,7 @@ services:
       SHARED_STORAGE_PATH: /var/shared-storage
       LARAVEL_WEBHOOK_URL: http://laravel/api/webhook/analysis-done
       WEBHOOK_SECRET: ${WEBHOOK_SECRET}
-      CLAUDE_API_KEY: ${CLAUDE_API_KEY}
+      GEMINI_API_KEY: "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"
       DATABASE_URL: postgresql://${DB_USERNAME:-entsi_user}:${DB_PASSWORD:-secret}@postgres:5432/${DB_DATABASE:-entsi_saas}
     volumes:
       - ./ai-service:/app

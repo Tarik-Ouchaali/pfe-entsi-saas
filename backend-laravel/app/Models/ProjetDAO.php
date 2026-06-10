@@ -38,17 +38,17 @@ class ProjetDAO extends Model
 
     public function documentDAOs(): HasMany
     {
-        return $this->hasMany(DocumentDAO::class);
+        return $this->hasMany(DocumentDAO::class, 'projet_dao_id');
     }
 
     public function resultatAnalyse(): HasOne
     {
-        return $this->hasOne(ResultatAnalyse::class);
+        return $this->hasOne(ResultatAnalyse::class, 'projet_dao_id');
     }
 
     public function memoireTechnique(): HasOne
     {
-        return $this->hasOne(MemoireTechnique::class);
+        return $this->hasOne(MemoireTechnique::class, 'projet_dao_id');
     }
 
     // entreprise() provided by BelongsToTenant trait

@@ -7,6 +7,7 @@ import os
 import json
 import hmac
 import hashlib
+import asyncio
 import httpx
 from pathlib import Path
 from fastapi import FastAPI, BackgroundTasks, HTTPException
@@ -21,8 +22,12 @@ load_dotenv()
 SHARED_STORAGE_PATH = os.getenv("SHARED_STORAGE_PATH", "/var/shared-storage")
 WEBHOOK_SECRET      = os.getenv("WEBHOOK_SECRET", "change_me_strong_secret_key")
 GEMINI_API_KEY      = os.getenv("GEMINI_API_KEY", "")
-GEMINI_MODEL        = "gemini-2.0-flash"
-GEMINI_API_URL      = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent"
+GEMINI_MODEL        = "deepseek/deepseek-chat"
+
+# إيلا بغيتي خيار احتياطي د Google متاح 100% دبا:
+# GEMINI_MODEL        = "google/gemma-2-9b-it:free"
+
+GEMINI_API_URL      = "https://openrouter.ai/api/v1/chat/completions"
 
 # ------------------------------------------------------------
 # App
@@ -123,25 +128,62 @@ def extract_text_from_pdf(file_path: Path) -> str:
 # ------------------------------------------------------------
 # Gemini API Helper
 # ------------------------------------------------------------
+# ------------------------------------------------------------
+# Gemini API Helper — Avec Retry & Fallback automatique
+# ------------------------------------------------------------
+# ------------------------------------------------------------
+# Gemini API Helper — Avec Retry Intelligent
+# ------------------------------------------------------------
 async def call_gemini(prompt: str) -> str:
-    """Appelle Gemini API et retourne le texte de la réponse."""
-    async with httpx.AsyncClient() as client:
-        response = await client.post(
-            f"{GEMINI_API_URL}?key={GEMINI_API_KEY}",
-            headers={"Content-Type": "application/json"},
-            json={
-                "contents": [{"parts": [{"text": prompt}]}],
-                "generationConfig": {
-                    "temperature": 0.1,
-                    "responseMimeType": "application/json",
-                },
-            },
-            timeout=120.0,
-        )
-        response.raise_for_status()
-        result = response.json()
-        return result["candidates"][0]["content"]["parts"][0]["text"]
-
+    """
+    Appelle Gemini via OpenRouter avec des headers complets.
+    """
+    max_retries = 3
+    delay = 2.0 
+    
+    headers = {
+        "Authorization": f"Bearer {GEMINI_API_KEY.strip()}",
+        "Content-Type": "application/json",
+        "HTTP-Referer": "http://localhost:8000",  # إجبارية ف بعض الحسابات ف OpenRouter
+        "X-Title": "ENTSI PFE Application",
+    }
+    
+    payload = {
+        "model": GEMINI_MODEL,
+        "messages": [
+            {"role": "user", "content": prompt}
+        ],
+        "temperature": 0.1
+    }
+    
+    for attempt in range(max_retries):
+        async with httpx.AsyncClient() as client:
+            try:
+                response = await client.post(
+                    GEMINI_API_URL,
+                    headers=headers,
+                    json=payload,
+                    timeout=120.0,
+                )
+                
+                if response.status_code != 200:
+                    print(f"❌ [OpenRouter Error Detail] Status {response.status_code}: {response.text}")
+                
+                if response.status_code == 429:
+                    if attempt < max_retries - 1:
+                        await asyncio.sleep(delay)
+                        delay *= 2
+                        continue
+                        
+                response.raise_for_status()
+                result = response.json()
+                return result["choices"][0]["message"]["content"]
+                
+            except httpx.HTTPStatusError as e:
+                if response.status_code != 429 or attempt == max_retries - 1:
+                    raise e
+                    
+    raise Exception("OpenRouter API error persistant.")
 # ------------------------------------------------------------
 # Background Task — analyse PDF
 # ------------------------------------------------------------
@@ -165,27 +207,44 @@ async def process_analyse(
 
         text = extract_text_from_pdf(full_path)
 
-        prompt = f"""
-Tu es un expert en marchés publics marocains.
-Analyse ce document DAO et extrais toutes les exigences administratives et techniques.
-
-Texte du DAO (premiers 50000 caractères):
-{text[:50000]}
-
-Retourne UNIQUEMENT un JSON valide avec cette structure exacte:
-{{
-  "resume_global": "résumé en 2-3 phrases",
-  "exigences": [
-    {{
-      "type": "administratif" | "technique",
-      "description": "description de l'exigence",
-      "est_obligatoire": true | false
-    }}
-  ]
-}}
-"""
+        prompt = (
+            "Tu es un expert en marchés publics marocains.\n"
+            "Analyse ce document DAO et extrais toutes les exigences administratives et techniques.\n\n"
+            f"Texte du DAO (premiers 50000 caractères):\n{text[:50000]}\n\n"
+            "Retourne UNIQUEMENT un JSON valide avec la structure suivante :\n"
+            "Format attendu :\n"
+            "{\n"
+            '  "resume_global": "résumé en 2-3 phrases",\n'
+            '  "exigences": [\n'
+            "    {\n"
+            '      "type": "administratif" ou "technique",\n'
+            '      "description": "description de l\'exigence",\n'
+            '      "est_obligatoire": true ou false\n'
+            "    }\n"
+            "  ]\n"
+            "}"
+        )
         gemini_response = await call_gemini(prompt)
-        parsed = json.loads(gemini_response)
+        
+        # --- التعديل هنا: تنقية الجواب قبل الـ Loading ---
+        cleaned_response = gemini_response.strip()
+        
+        # إزالة علامات الماركداون إذا كانت موجودة (مثلا ```json ... ```)
+        if cleaned_response.startswith("```"):
+            # إزالة السطر الأول (```json) وإزالة السطور الأخيرة (```)
+            lines = cleaned_response.splitlines()
+            if lines[0].startswith("```"):
+                lines = lines[1:]
+            if lines[-1].strip() == "```":
+                lines = lines[:-1]
+            cleaned_response = "\n".join(lines).strip()
+
+        try:
+            parsed = json.loads(cleaned_response)
+        except json.JSONDecodeError:
+            # إذا فشل الـ parsing، غادي نلوحو Error مخصص باش الـ Webhook يوصل للارافيل
+            # بلا ما يوقف الخدمة كاع
+            raise ValueError(f"Impossible de parser la réponse de l'IA. Réponse reçue: {gemini_response[:100]}...")
 
         payload = WebhookAnalysePayload(
             projet_id=projet_id,
@@ -219,7 +278,7 @@ async def process_conformite(
     CV: extraction texte. Autres: metadata kafi (titre + categorie + date_expiration).
     """
     try:
-        # Extract text for CV documents only — metadata kafi for others
+        # 1. Extraction dial l-text ghir l-documents dial l-CV
         for doc in documents:
             if doc.get("categorie") == "cv":
                 full_path = Path(SHARED_STORAGE_PATH) / doc["chemin_fichier"]
@@ -230,6 +289,7 @@ async def process_conformite(
             else:
                 doc["contenu"] = None  # metadata kafi: titre + categorie + date_expiration
 
+        # 2. Preparation dial l-Prompt l-AI
         prompt = f"""
 Tu es un expert en marchés publics marocains.
 Analyse la conformité entre ces exigences et ces documents disponibles.
@@ -260,27 +320,81 @@ Retourne UNIQUEMENT un JSON valide avec cette structure exacte:
   ]
 }}
 """
+        # 3. Appeler Gemini API
         gemini_response = await call_gemini(prompt)
-        parsed = json.loads(gemini_response)
 
-        payload = WebhookConformitePayload(
-            projet_id=projet_id,
-            entreprise_id=entreprise_id,
-            statut="success",
-            score_global=parsed["score_global"],
-            resume_conformite=parsed["resume_conformite"],
-            matchings=parsed["matchings"],
-        )
-        await send_webhook(webhook_url, payload.model_dump_json())
+        # --- HNA FIN GHADIN NZIDO L-CLEANING DIAL L-JSON ---
+        clean_response = gemini_response.strip()
+        if clean_response.startswith("```json"):
+            clean_response = clean_response[7:]
+        if clean_response.endswith("```"):
+            clean_response = clean_response[:-3]
+        clean_response = clean_response.strip()
+        
+        try:
+            parsed = json.loads(clean_response)
+        except json.JSONDecodeError as je:
+            # Ila b9a chi mouchkil, n-loggiw l-reponse nichen bach t-choufha f `docker logs`
+            print(f"FAILED TO PARSE GEMINI RESPONSE: {gemini_response}")
+            raise RuntimeError(f"Gemini output non-valide JSON: {str(je)}")
+
+        # 4. Preparation dial l-Payload dict
+        webhook_data = {
+            "projet_id": projet_id,
+            "entreprise_id": entreprise_id,
+            "statut": "success",
+            "score_global": parsed["score_global"],
+            "resume_conformite": parsed["resume_conformite"],
+            "matchings": parsed["matchings"],
+            "error": None
+        }
+        
+        # 5. Serialization strict dial l-JSON (Bla spaces + sort keys)
+        clean_json_payload = json.dumps(webhook_data, separators=(',', ':'), sort_keys=True)
+        
+        # 6. l-7isab dial l-HMAC Signature bach t-matchi 100% m3a Laravel Middleware
+        custom_signature = hmac.new(
+            WEBHOOK_SECRET.encode('utf-8'),
+            clean_json_payload.encode('utf-8'),
+            hashlib.sha256
+        ).hexdigest()
+
+        # 7. Envoi dial l-Webhook nichen b httpx
+        headers = {
+            "Content-Type": "application/json; charset=utf-8",
+            "X-Webhook-Signature": custom_signature
+        }
+
+        async with httpx.AsyncClient() as client:
+            await client.post(webhook_url, content=clean_json_payload, headers=headers)
 
     except Exception as e:
-        payload = WebhookConformitePayload(
-            projet_id=projet_id,
-            entreprise_id=entreprise_id,
-            statut="error",
-            error=str(e),
-        )
-        await send_webhook(webhook_url, payload.model_dump_json())
+        # 8. Gestion dial l-Erreur: Envoi payload dial l-error m9add 7ta houwa b t-Signature
+        webhook_data = {
+            "projet_id": projet_id,
+            "entreprise_id": entreprise_id,
+            "statut": "error",
+            "score_global": 0,
+            "resume_conformite": "Erreur lors de l'analyse de conformite",
+            "matchings": [],
+            "error": str(e)
+        }
+        
+        clean_json_payload = json.dumps(webhook_data, separators=(',', ':'), sort_keys=True)
+        
+        custom_signature = hmac.new(
+            WEBHOOK_SECRET.encode('utf-8'),
+            clean_json_payload.encode('utf-8'),
+            hashlib.sha256
+        ).hexdigest()
+        
+        headers = {
+            "Content-Type": "application/json; charset=utf-8",
+            "X-Webhook-Signature": custom_signature
+        }
+        
+        async with httpx.AsyncClient() as client:
+            await client.post(webhook_url, content=clean_json_payload, headers=headers)
 
 # ------------------------------------------------------------
 # Background Task — mémoire technique
@@ -303,8 +417,12 @@ Informations:
 - Projet: {contexte['titre_projet']}
 - Entreprise: {contexte['raison_sociale']} (ICE: {contexte['ice']})
 - Résumé DAO: {contexte['resume_dao']}
-- Exigences: {json.dumps(contexte['exigences'], ensure_ascii=False)}
-- Documents disponibles: {json.dumps(contexte['documents_disponibles'], ensure_ascii=False)}
+- Exigences extraites du DAO: {json.dumps(contexte['exigences'], ensure_ascii=False)}
+- Documents réels de l'entreprise disponibles: {json.dumps(contexte['documents_disponibles'], ensure_ascii=False)}
+
+CONSIGNE MVP IMPORTANTE (Si les documents de l'entreprise sont vides ou insuffisants):
+Si l'array 'documents_disponibles' est vide, NE CRASH PAS et ne refuse pas la tâche. 
+Génère quand même TOUTES les sections demandées ci-dessous en utilisant des données fictives réalistes de test ou des balises textuelles comme "[À compléter: Insérer les CV de l'équipe technique ici]" pour que le document reste structurellement parfait.
 
 Structure requise du mémoire:
 1. Présentation de l'entreprise
@@ -314,7 +432,7 @@ Structure requise du mémoire:
 5. Moyens humains et techniques
 6. Planning d'exécution
 
-Retourne UNIQUEMENT un JSON valide avec cette structure exacte:
+Retourne UNIQUEMENT un JSON valide avec cette structure exacte, sans markdown additionnel ni texte hors du JSON:
 {{
   "contenu": "texte complet du mémoire avec toutes les sections",
   "sections": [
@@ -326,7 +444,18 @@ Retourne UNIQUEMENT un JSON valide avec cette structure exacte:
 }}
 """
         gemini_response = await call_gemini(prompt)
-        parsed = json.loads(gemini_response)
+        
+        # ---- 1. CLEANING CODE BLOCK (Anti-Crash Markdown) ----
+        cleaned_response = gemini_response.strip()
+        if cleaned_response.startswith("```json"):
+            cleaned_response = cleaned_response[7:]
+        if cleaned_response.endswith("```"):
+            cleaned_response = cleaned_response[:-3]
+        cleaned_response = cleaned_response.strip()
+        # ------------------------------------------------------
+
+        # Daba ghadi ndiro loads l cleaned_response machi gemini_response direct
+        parsed = json.loads(cleaned_response)
 
         # Generate PDF with reportlab
         import uuid as uuid_module

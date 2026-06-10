@@ -32,6 +32,8 @@ class WebhookController extends Controller
     {
         $data = $request->json()->all();
 
+        \Log::info("=== RAW WEBHOOK DATA ===", $data);
+
         $projet = ProjetDAO::findOrFail($data['projet_id']);
 
         if ($data['statut'] === 'success') {
@@ -52,6 +54,8 @@ class WebhookController extends Controller
     public function conformiteDone(Request $request): JsonResponse
     {
         $data = $request->json()->all();
+
+        \Log::info("=== WEBHOOK CONFORMITE RAW DATA ===", $data);
 
         $projet = ProjetDAO::findOrFail($data['projet_id']);
 

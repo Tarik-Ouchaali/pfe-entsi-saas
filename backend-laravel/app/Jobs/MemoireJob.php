@@ -17,10 +17,7 @@ class MemoireJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    /**
-     * @var string
-     */
-    public string $queue = 'default';
+
 
     /**
      * @var int
@@ -73,7 +70,7 @@ class MemoireJob implements ShouldQueue
                     ];
                 })->values()->toArray(),
             ],
-            'webhook_url'   => url('/api/webhook/memoire-done'),
+            'webhook_url'   => 'http://laravel/api/webhook/memoire-done',
         ];
 
         $response = Http::timeout(60)->post(config('services.ai_service.url') . '/memoire', $payload);

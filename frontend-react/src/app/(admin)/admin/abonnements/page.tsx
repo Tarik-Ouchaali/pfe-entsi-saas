@@ -122,11 +122,10 @@ export default function AbonnementsPage() {
           <button
             key={f.value}
             onClick={() => handleFilterStatut(f.value)}
-            className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
-              filterStatut === f.value
-                ? 'bg-navy text-white'
-                : 'bg-white border border-border text-text-muted hover:border-navy'
-            }`}
+            className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${filterStatut === f.value
+              ? 'bg-navy text-white'
+              : 'bg-white border border-border text-text-muted hover:border-navy'
+              }`}
           >
             {f.label}
           </button>
@@ -134,13 +133,12 @@ export default function AbonnementsPage() {
 
         <button
           onClick={handleFilterExpiring}
-          className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
-            filterExpiring
-              ? 'bg-orange-100 text-orange-700 border border-orange-300'
-              : 'bg-white border border-border text-text-muted hover:border-navy'
-          }`}
+          className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${filterExpiring
+            ? 'bg-orange-100 text-orange-700 border border-orange-300'
+            : 'bg-white border border-border text-text-muted hover:border-navy'
+            }`}
         >
-          ⚠ Expirant bientôt
+          Expirant bientôt
         </button>
       </div>
 
@@ -174,7 +172,7 @@ export default function AbonnementsPage() {
                     {a.entreprise.raison_sociale}
                   </td>
                   <td className="px-6 py-4 text-text-muted">
-                    {a.plan_saas.nom_plan}
+                    {a.plan_saa_s.nom_plan}
                   </td>
                   <td className="px-6 py-4 text-xs text-text-muted">
                     {new Date(a.date_debut).toLocaleDateString('fr-FR')}
@@ -199,7 +197,7 @@ export default function AbonnementsPage() {
                   <td className="px-6 py-4 text-right">
                     {renewSuccess === a.id ? (
                       <span className="text-green-600 text-xs font-medium">
-                        ✅ Renouvelé
+                        Renouvelé
                       </span>
                     ) : (
                       <button

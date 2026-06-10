@@ -18,10 +18,6 @@ class AnalyseDAOJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    /**
-     * @var string
-     */
-    public string $queue = 'default';
 
     /**
      * @var int
@@ -53,7 +49,7 @@ class AnalyseDAOJob implements ShouldQueue
                 'projet_id'     => $this->projet->id,
                 'entreprise_id' => $this->projet->entreprise_id,
                 'file_path'     => $document->chemin_fichier,
-                'webhook_url'   => url('/api/webhook/analysis-done'),
+                'webhook_url'   => 'http://laravel/api/webhook/analysis-done',
             ]
         );
 

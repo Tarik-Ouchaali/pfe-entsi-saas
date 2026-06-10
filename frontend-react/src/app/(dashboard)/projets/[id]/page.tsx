@@ -112,7 +112,7 @@ export default function ProjetDetailPage() {
     )
   }
 
-  const doc = projet.documents?.[0]
+  const doc = projet.document_d_a_os?.[0]
 
   return (
     <div>
@@ -133,7 +133,7 @@ export default function ProjetDetailPage() {
         {projet.statut === 'Nouveau' && (
           <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 flex items-center gap-3">
             <span className="text-sm text-gray-600">
-              ⏳ Projet créé — en attente d&apos;analyse
+              Projet créé — en attente d&apos;analyse
             </span>
           </div>
         )}
@@ -147,13 +147,13 @@ export default function ProjetDetailPage() {
         )}
         {projet.statut === 'Termine' && (
           <div className="bg-green-50 border border-green-200 rounded-xl p-4 flex items-center gap-3">
-            <span className="text-sm text-green-700">✅ Analyse terminée</span>
+            <span className="text-sm text-green-700">Analyse terminée</span>
           </div>
         )}
         {projet.statut === 'Echoue' && (
           <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-center gap-3">
             <span className="text-sm text-red-700">
-              ❌ Analyse échouée — un crédit a été remboursé automatiquement
+              Analyse échouée — un crédit a été remboursé automatiquement
             </span>
           </div>
         )}
@@ -282,11 +282,10 @@ export default function ProjetDetailPage() {
                     className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg"
                   >
                     <span
-                      className={`text-xs px-2 py-0.5 rounded-full whitespace-nowrap ${
-                        ex.type === 'administratif'
-                          ? 'bg-blue-100 text-blue-700'
-                          : 'bg-purple-100 text-purple-700'
-                      }`}
+                      className={`text-xs px-2 py-0.5 rounded-full whitespace-nowrap ${ex.type === 'administratif'
+                        ? 'bg-blue-100 text-blue-700'
+                        : 'bg-purple-100 text-purple-700'
+                        }`}
                     >
                       {ex.type}
                     </span>

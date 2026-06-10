@@ -32,6 +32,22 @@ class AuthService
                 'role' => 'AdminEntreprise',
             ]);
 
+            $planStarter = \App\Models\PlanSaaS::where('nom_plan', 'Starter')->first();
+            \Illuminate\Support\Facades\Log::info('Plan Starter: ', [$planStarter]);
+            if ($planStarter) {
+                \App\Models\Abonnement::create([
+                    'entreprise_id' => $entreprise->id,
+                    'plan_saas_id'  => $planStarter->id,
+                    'date_debut'    => now(),
+                    'date_fin'      => now()->addDays(30),
+                    'statut'        => 'actif',
+                    'next_plan_id'  => null,
+                ]);
+                $entreprise->update([
+                    'abonnement_credits_restants' => $planStarter->credits_alloues,
+                ]);
+            }
+
             $user->sendEmailVerificationNotification();
 
             $token = $user->createToken('auth_token')->plainTextToken;

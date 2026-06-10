@@ -80,6 +80,32 @@ export default function MemoirePage() {
     )
   }
 
+  const handleDownload = async () => {
+    try {
+      const token = localStorage.getItem('auth_token') // ← s7i7a
+      const response = await fetch(`/api/projets/${id}/memoire/telecharger`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      })
+
+      if (!response.ok) throw new Error("Erreur")
+
+      const blob = await response.blob()
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', `memoire_${id}.pdf`)
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+      window.URL.revokeObjectURL(url) // ← cleanup
+    } catch (err) {
+      setError(true)
+    }
+  }
+
   // Error state
   if (error) {
     return (
@@ -136,7 +162,7 @@ export default function MemoirePage() {
           {isAdminEntreprise() && (
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-4 max-w-sm mx-auto">
               <p className="text-sm text-blue-700">
-                💳 2 crédits seront consommés pour cette génération.
+                2 crédits seront consommés pour cette génération.
               </p>
             </div>
           )}
@@ -160,7 +186,7 @@ export default function MemoirePage() {
           {generated ? (
             <div className="bg-green-50 border border-green-200 rounded-xl p-4 mt-6 max-w-sm mx-auto">
               <p className="text-sm text-green-700">
-                ✅ Génération lancée ! Vous serez notifié par email.
+                Génération lancée ! Vous serez notifié par email.
               </p>
             </div>
           ) : (
@@ -190,38 +216,35 @@ export default function MemoirePage() {
             <div className="flex items-center">
               <h3 className="font-semibold text-navy">Mémoire technique</h3>
               <span
-                className={`ml-3 inline-flex rounded-full px-3 py-1 text-xs font-medium ${
-                  memoire.statut === 'En_generation'
-                    ? 'bg-yellow-100 text-yellow-700 animate-pulse'
-                    : memoire.statut === 'Termine'
-                      ? 'bg-green-100 text-green-700'
-                      : 'bg-red-100 text-red-700'
-                }`}
+                className={`ml-3 inline-flex rounded-full px-3 py-1 text-xs font-medium ${memoire.statut === 'En_generation'
+                  ? 'bg-yellow-100 text-yellow-700 animate-pulse'
+                  : memoire.statut === 'Termine'
+                    ? 'bg-green-100 text-green-700'
+                    : 'bg-red-100 text-red-700'
+                  }`}
               >
                 {memoire.statut === 'En_generation'
-                  ? '⏳ En génération...'
+                  ? 'En génération...'
                   : memoire.statut === 'Termine'
-                    ? '✅ Prêt'
-                    : '❌ Échec'}
+                    ? 'Prêt'
+                    : 'Échec'}
               </span>
             </div>
 
             {memoire.statut === 'Termine' && (
               <div className="flex gap-2">
                 <button
-                  onClick={() =>
-                    window.open(`/api/projets/${id}/memoire/telecharger`, '_blank')
-                  }
+                  onClick={handleDownload}
                   className="bg-gold text-white px-4 py-2 rounded-lg text-sm hover:bg-gold-hover transition-colors"
                 >
-                  📥 Télécharger PDF
+                  Télécharger PDF
                 </button>
                 {isAdminEntreprise() && (
                   <button
                     onClick={handleRegenerer}
                     className="border border-navy text-navy px-4 py-2 rounded-lg text-sm hover:bg-navy hover:text-white transition-colors"
                   >
-                    🔄 Régénérer
+                    Régénérer
                   </button>
                 )}
               </div>

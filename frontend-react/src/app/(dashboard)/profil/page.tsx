@@ -220,11 +220,10 @@ export default function ProfilPage() {
               onChange={(e) =>
                 setFormInfo({ ...formInfo, prenom: e.target.value })
               }
-              className={`w-full px-3 py-2 rounded-lg border text-sm outline-none transition-colors ${
-                errorsInfo.prenom
+              className={`w-full px-3 py-2 rounded-lg border text-sm outline-none transition-colors ${errorsInfo.prenom
                   ? 'border-red-300 focus:border-red-500'
                   : 'border-border focus:border-navy'
-              }`}
+                }`}
             />
             {errorsInfo.prenom && (
               <p className="text-xs text-red-600 mt-1">{errorsInfo.prenom}</p>
@@ -241,11 +240,10 @@ export default function ProfilPage() {
               onChange={(e) =>
                 setFormInfo({ ...formInfo, nom: e.target.value })
               }
-              className={`w-full px-3 py-2 rounded-lg border text-sm outline-none transition-colors ${
-                errorsInfo.nom
+              className={`w-full px-3 py-2 rounded-lg border text-sm outline-none transition-colors ${errorsInfo.nom
                   ? 'border-red-300 focus:border-red-500'
                   : 'border-border focus:border-navy'
-              }`}
+                }`}
             />
             {errorsInfo.nom && (
               <p className="text-xs text-red-600 mt-1">{errorsInfo.nom}</p>
@@ -263,11 +261,10 @@ export default function ProfilPage() {
             onChange={(e) =>
               setFormInfo({ ...formInfo, email: e.target.value })
             }
-            className={`w-full px-3 py-2 rounded-lg border text-sm outline-none transition-colors ${
-              errorsInfo.email
+            className={`w-full px-3 py-2 rounded-lg border text-sm outline-none transition-colors ${errorsInfo.email
                 ? 'border-red-300 focus:border-red-500'
                 : 'border-border focus:border-navy'
-            }`}
+              }`}
           />
           {errorsInfo.email && (
             <p className="text-xs text-red-600 mt-1">{errorsInfo.email}</p>
@@ -276,7 +273,7 @@ export default function ProfilPage() {
 
         {successInfo && (
           <div className="bg-green-50 border border-green-200 rounded-lg p-3 text-sm text-green-700 mt-4">
-            ✅ Informations mises à jour avec succès.
+            Informations mises à jour avec succès.
           </div>
         )}
 
@@ -342,11 +339,10 @@ export default function ProfilPage() {
                   current_password: e.target.value,
                 })
               }
-              className={`w-full px-3 py-2 rounded-lg border text-sm outline-none transition-colors ${
-                errorsPassword.current_password
+              className={`w-full px-3 py-2 rounded-lg border text-sm outline-none transition-colors ${errorsPassword.current_password
                   ? 'border-red-300 focus:border-red-500'
                   : 'border-border focus:border-navy'
-              }`}
+                }`}
             />
             {errorsPassword.current_password && (
               <p className="text-xs text-red-600 mt-1">
@@ -368,11 +364,10 @@ export default function ProfilPage() {
                   password: e.target.value,
                 })
               }
-              className={`w-full px-3 py-2 rounded-lg border text-sm outline-none transition-colors ${
-                errorsPassword.password
+              className={`w-full px-3 py-2 rounded-lg border text-sm outline-none transition-colors ${errorsPassword.password
                   ? 'border-red-300 focus:border-red-500'
                   : 'border-border focus:border-navy'
-              }`}
+                }`}
             />
             <p className="text-xs text-text-muted mt-1">
               Min 8 caractères, avec majuscule, minuscule, chiffre et caractère
@@ -398,11 +393,10 @@ export default function ProfilPage() {
                   password_confirmation: e.target.value,
                 })
               }
-              className={`w-full px-3 py-2 rounded-lg border text-sm outline-none transition-colors ${
-                errorsPassword.password_confirmation
+              className={`w-full px-3 py-2 rounded-lg border text-sm outline-none transition-colors ${errorsPassword.password_confirmation
                   ? 'border-red-300 focus:border-red-500'
                   : 'border-border focus:border-navy'
-              }`}
+                }`}
             />
             {errorsPassword.password_confirmation && (
               <p className="text-xs text-red-600 mt-1">
@@ -414,7 +408,7 @@ export default function ProfilPage() {
 
         {successPassword && (
           <div className="bg-green-50 border border-green-200 rounded-lg p-3 text-sm text-green-700 mt-4">
-            ✅ Mot de passe modifié avec succès.
+            Mot de passe modifié avec succès.
           </div>
         )}
 

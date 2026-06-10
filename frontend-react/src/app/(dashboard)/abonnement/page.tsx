@@ -175,12 +175,12 @@ export default function AbonnementPage() {
       {/* Change result alerts */}
       {changeResult && changeResult.type === 'upgrade' && (
         <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-6 text-sm text-green-700">
-          ✅ {changeResult.message}
+          {changeResult.message}
         </div>
       )}
       {changeResult && changeResult.type === 'downgrade' && (
         <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6 text-sm text-blue-700">
-          ℹ {changeResult.message}
+          {changeResult.message}
         </div>
       )}
       {changeError && (

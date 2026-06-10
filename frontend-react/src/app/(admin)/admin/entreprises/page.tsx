@@ -153,7 +153,7 @@ export default function EntreprisesPage() {
 
       {/* Info banner */}
       <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 mb-6 text-sm text-blue-700">
-        ℹ Les données affichées proviennent des abonnements actifs.
+        Les données affichées proviennent des abonnements actifs.
         La gestion complète des entreprises sera disponible prochainement.
       </div>
 
@@ -185,8 +185,8 @@ export default function EntreprisesPage() {
                     {a.entreprise.raison_sociale}
                   </td>
                   <td className="px-6 py-4">
-                    <p className="text-text">{a.plan_saas.nom_plan}</p>
-                    <p className="text-xs text-text-muted">{a.plan_saas.prix} MAD/mois</p>
+                    <p className="text-text">{a.plan_saa_s.nom_plan}</p>
+                    <p className="text-xs text-text-muted">{a.plan_saa_s.prix} MAD/mois</p>
                   </td>
                   <td className={`px-6 py-4 text-xs ${dateFinColor}`}>
                     {new Date(a.date_fin).toLocaleDateString('fr-FR')}
@@ -319,7 +319,7 @@ export default function EntreprisesPage() {
             {/* Adjust success */}
             {adjustSuccess && (
               <div className="bg-green-50 border border-green-200 rounded-lg p-3 text-sm text-green-700 mt-3">
-                ✅ Crédits ajustés avec succès.
+                Crédits ajustés avec succès.
               </div>
             )}
 

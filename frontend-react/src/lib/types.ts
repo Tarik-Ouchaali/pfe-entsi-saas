@@ -62,7 +62,7 @@ export interface ProjetDAO {
   titre_projet: string
   statut: 'Nouveau' | 'En_analyse' | 'Termine' | 'Echoue'
   created_at: string
-  documents?: DocumentDAO[]
+  document_d_a_os?: DocumentDAO[]
   resultat_analyse?: ResultatAnalyse | null
 }
 
@@ -137,7 +137,7 @@ export interface AdminEntreprise {
 export interface AdminAbonnement {
   id: number
   entreprise: { id: number; raison_sociale: string }
-  plan_saas: { id: number; nom_plan: string; prix: number }
+  plan_saa_s: { id: number; nom_plan: string; prix: number }
   date_debut: string
   date_fin: string
   statut: string

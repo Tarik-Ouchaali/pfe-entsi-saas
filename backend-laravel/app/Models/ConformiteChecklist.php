@@ -58,12 +58,12 @@ class ConformiteChecklist extends Model
      */
     public function exigenceDAO(): BelongsTo
     {
-        return $this->belongsTo(ExigenceDAO::class);
+        return $this->belongsTo(ExigenceDAO::class, 'exigence_dao_id');
     }
 
     public function documentBibliotheque(): BelongsTo
     {
-        return $this->belongsTo(DocumentBibliotheque::class)->withDefault();
+        return $this->belongsTo(DocumentBibliotheque::class, 'document_bibliotheque_id')->withDefault();
     }
 
     // ──────────────────────────────────────

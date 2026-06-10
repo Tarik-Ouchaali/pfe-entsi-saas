@@ -102,11 +102,10 @@ export default function ProjetsPage() {
           <button
             key={f.value}
             onClick={() => handleFilterChange(f.value)}
-            className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors cursor-pointer ${
-              filterStatut === f.value
-                ? 'bg-navy text-white'
-                : 'bg-white border border-border text-text-muted hover:border-navy hover:text-navy'
-            }`}
+            className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors cursor-pointer ${filterStatut === f.value
+              ? 'bg-navy text-white'
+              : 'bg-white border border-border text-text-muted hover:border-navy hover:text-navy'
+              }`}
           >
             {f.label}
           </button>
@@ -191,7 +190,7 @@ export default function ProjetsPage() {
 
                     {/* Middle row */}
                     <div className="mt-3 flex items-center gap-4 text-sm text-text-muted">
-                      <span>📄 {p.documents?.[0]?.nom_fichier ?? 'Aucun document'}</span>
+                      <span>{p.document_d_a_os?.[0]?.nom_fichier ?? 'Aucun document'}</span>
                     </div>
 
                     {/* Bottom row */}
@@ -234,11 +233,10 @@ export default function ProjetsPage() {
                   <button
                     onClick={() => setPage((p) => p - 1)}
                     disabled={page === 1}
-                    className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
-                      page === 1
-                        ? 'opacity-40 cursor-not-allowed border border-border text-text-muted'
-                        : 'border border-border text-text hover:border-navy hover:text-navy'
-                    }`}
+                    className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${page === 1
+                      ? 'opacity-40 cursor-not-allowed border border-border text-text-muted'
+                      : 'border border-border text-text hover:border-navy hover:text-navy'
+                      }`}
                   >
                     ← Précédent
                   </button>
@@ -248,11 +246,10 @@ export default function ProjetsPage() {
                   <button
                     onClick={() => setPage((p) => p + 1)}
                     disabled={page === projets.last_page}
-                    className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
-                      page === projets.last_page
-                        ? 'opacity-40 cursor-not-allowed border border-border text-text-muted'
-                        : 'border border-border text-text hover:border-navy hover:text-navy'
-                    }`}
+                    className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${page === projets.last_page
+                      ? 'opacity-40 cursor-not-allowed border border-border text-text-muted'
+                      : 'border border-border text-text hover:border-navy hover:text-navy'
+                      }`}
                   >
                     Suivant →
                   </button>
