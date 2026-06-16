@@ -9,6 +9,7 @@ import hmac
 import hashlib
 import asyncio
 import httpx
+import re
 from pathlib import Path
 from fastapi import FastAPI, BackgroundTasks, HTTPException
 from pydantic import BaseModel
@@ -324,18 +325,18 @@ Retourne UNIQUEMENT un JSON valide avec cette structure exacte:
         gemini_response = await call_gemini(prompt)
 
         # --- HNA FIN GHADIN NZIDO L-CLEANING DIAL L-JSON ---
-        clean_response = gemini_response.strip()
-        if clean_response.startswith("```json"):
-            clean_response = clean_response[7:]
-        if clean_response.endswith("```"):
-            clean_response = clean_response[:-3]
-        clean_response = clean_response.strip()
+        match = re.search(r'\{.*\}', gemini_response, re.DOTALL)
+        
+        if match:
+            clean_response = match.group(0)
+        else:
+            raise ValueError("No JSON object found in Gemini response")
         
         try:
             parsed = json.loads(clean_response)
         except json.JSONDecodeError as je:
             # Ila b9a chi mouchkil, n-loggiw l-reponse nichen bach t-choufha f `docker logs`
-            print(f"FAILED TO PARSE GEMINI RESPONSE: {gemini_response}")
+            print(f"FAILED TO PARSE GEMINI RESPONSE: {clean_response}")
             raise RuntimeError(f"Gemini output non-valide JSON: {str(je)}")
 
         # 4. Preparation dial l-Payload dict
@@ -365,6 +366,34 @@ Retourne UNIQUEMENT un JSON valide avec cette structure exacte:
             "X-Webhook-Signature": custom_signature
         }
 
+        async with httpx.AsyncClient() as client:
+            await client.post(webhook_url, content=clean_json_payload, headers=headers)
+
+    except Exception as e:
+        # 8. Gestion dial l-Erreur: Envoi payload dial l-error m9add 7ta houwa b t-Signature
+        webhook_data = {
+            "projet_id": projet_id,
+            "entreprise_id": entreprise_id,
+            "statut": "error",
+            "score_global": 0,
+            "resume_conformite": "Erreur lors de l'analyse de conformite",
+            "matchings": [],
+            "error": str(e)
+        }
+        
+        clean_json_payload = json.dumps(webhook_data, separators=(',', ':'), sort_keys=True)
+        
+        custom_signature = hmac.new(
+            WEBHOOK_SECRET.encode('utf-8'),
+            clean_json_payload.encode('utf-8'),
+            hashlib.sha256
+        ).hexdigest()
+        
+        headers = {
+            "Content-Type": "application/json; charset=utf-8",
+            "X-Webhook-Signature": custom_signature
+        }
+        
         async with httpx.AsyncClient() as client:
             await client.post(webhook_url, content=clean_json_payload, headers=headers)
 

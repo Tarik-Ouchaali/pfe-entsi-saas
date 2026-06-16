@@ -76,7 +76,7 @@ export default function DashboardPage() {
       <div>
         <PageHeader
           title="Tableau de bord"
-          subtitle={`Bienvenue, ${user?.prenom ?? ''} 👋`}
+          subtitle={`Bienvenue, ${user?.prenom ?? ''}`}
         />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           {[...Array(4)].map((_, i) => (
@@ -122,7 +122,7 @@ export default function DashboardPage() {
       {/* ── Section 1 — Page Header ── */}
       <PageHeader
         title="Tableau de bord"
-        subtitle={`Bienvenue, ${user?.prenom ?? ''} 👋`}
+        subtitle={`Bienvenue, ${user?.prenom ?? ''}`}
         action={
           <Link
             href="/projets/nouveau"
