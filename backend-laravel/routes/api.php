@@ -7,6 +7,7 @@ use App\Http\Controllers\ConformiteController;
 use App\Http\Controllers\CreditController;
 use App\Http\Controllers\MemoireController;
 use App\Http\Controllers\ProjetDAOController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\WebhookController;
 use Illuminate\Support\Facades\Route;
 
@@ -44,6 +45,12 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::get('/current', [AbonnementController::class, 'current']);
         Route::get('/plans',   [AbonnementController::class, 'plans']);
         Route::post('/change', [AbonnementController::class, 'change']);
+    });
+
+    Route::prefix('users')->group(function () {
+        Route::get('/',        [UserController::class, 'index']);
+        Route::post('/',       [UserController::class, 'store']);
+        Route::delete('/{id}', [UserController::class, 'destroy']);
     });
 
     Route::prefix('projets')->group(function () {

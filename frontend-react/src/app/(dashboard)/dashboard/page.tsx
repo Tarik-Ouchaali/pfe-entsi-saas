@@ -38,9 +38,7 @@ export default function DashboardPage() {
 
       const [projetsRes, balanceRes, abonnementRes] = await Promise.all([
         apiGet<PaginatedResponse<ProjetDAO>>('/projets?per_page=5'),
-        adminRole
-          ? apiGet<CreditsBalance>('/credits/balance')
-          : Promise.resolve(null),
+        apiGet<CreditsBalance>('/credits/balance'),
         adminRole
           ? apiGet<AbonnementCurrent>('/abonnement/current')
           : Promise.resolve(null),
@@ -68,7 +66,6 @@ export default function DashboardPage() {
   const totalProjets = projets?.total ?? 0
   const enAnalyse = projets?.data.filter((p) => p.statut === 'En_analyse').length ?? 0
   const termines = projets?.data.filter((p) => p.statut === 'Termine').length ?? 0
-  const creditsTotal = adminRole ? (balance?.total ?? 0) : null
 
   // ── Loading skeleton ──
   if (loading) {
@@ -180,9 +177,9 @@ export default function DashboardPage() {
         <div className="bg-white rounded-xl border border-border p-5 shadow-sm flex justify-between items-start">
           <div>
             <p className="text-sm text-text-muted mb-1">Crédits disponibles</p>
-            <p className="text-3xl font-bold text-gold">{creditsTotal !== null ? creditsTotal : '—'}</p>
+            <p className="text-3xl font-bold text-gold">{balance?.total ?? 0}</p>
             <p className="text-xs text-text-muted mt-1">
-              {adminRole ? 'abonnement + pack' : 'Contactez votre admin'}
+              {adminRole ? 'abonnement + pack' : 'Crédits entreprise'}
             </p>
           </div>
           <div className="w-10 h-10 bg-gold/10 text-gold rounded-lg flex items-center justify-center">

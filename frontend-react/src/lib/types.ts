@@ -5,7 +5,7 @@ export interface User {
   nom: string
   prenom: string
   email: string
-  role: 'AdminEntreprise' | 'EmployeEntreprise' | 'SuperAdmin'
+  role: 'AdminEntreprise' | 'Collaborateur' | 'SuperAdmin'
   entreprise_id: number
   email_verified_at: string | null
 }
@@ -142,4 +142,14 @@ export interface AdminAbonnement {
   date_fin: string
   statut: string
   next_plan: PlanSaaS | null
+}
+
+export interface CompanyUser {
+  id: number
+  nom: string
+  prenom: string
+  email: string
+  role: 'AdminEntreprise' | 'Collaborateur'
+  dernier_login: string | null
+  created_at: string
 }

@@ -49,6 +49,17 @@ const navItems: {
       roles: ['AdminEntreprise', 'Collaborateur'],
     },
     {
+      label: 'Utilisateurs',
+      href: '/users',
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M13 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" stroke="currentColor" strokeWidth="1.5" />
+          <path d="M3 17c0-3.3 2.7-6 6-6h2c3.3 0 6 2.7 6 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+        </svg>
+      ),
+      roles: ['AdminEntreprise'],
+    },
+    {
       label: 'Crédits',
       href: '/credits',
       icon: (

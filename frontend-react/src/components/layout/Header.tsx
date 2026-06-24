@@ -27,7 +27,7 @@ export default function Header({ title }: HeaderProps) {
   const roleLabel =
     user?.role === 'AdminEntreprise'
       ? 'Admin'
-      : user?.role === 'EmployeEntreprise'
+      : user?.role === 'Collaborateur'
         ? 'Employé'
         : user?.role === 'SuperAdmin'
           ? 'Super Admin'
